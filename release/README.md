@@ -52,6 +52,49 @@ DRY_RUN=1 ./release/bin/cancel-rc.sh 1.18.0 0 orgapacheparquet-1234
 DRY_RUN=1 ./release/bin/publish-release.sh 1.18.0 orgapacheparquet-1234
 ```
 
+### `bin/prepare-rc.sh`
+
+```
+prepare-rc.sh <version> [--rc <num>] [--skip-branch-creation]
+```
+
+| Argument | Workflow input | Description |
+| --- | --- | --- |
+| `<version>` | `version` | The release version, for example `1.18.0`. |
+| `--rc <num>` | `rc_number` | Use this RC number instead of the next free one. The script stops if the RC tag already exists. |
+| `--skip-branch-creation` | (none) | Do not create the `parquet-X.Y.x` release branch when it does not exist. |
+
+### `bin/cancel-rc.sh`
+
+```
+cancel-rc.sh <version> <rc-num> <staging-repo-id> [--allow-description-mismatch]
+```
+
+| Argument | Workflow input | Description |
+| --- | --- | --- |
+| `<version>` | `version` | The release version, for example `1.18.0`. |
+| `<rc-num>` | `rc_number` | The RC number that failed the vote, for example `0`. |
+| `<staging-repo-id>` | `staging_repo_id` | The Nexus staging repository to drop, for example `orgapacheparquet-1234`. |
+| `--allow-description-mismatch` | `allow_description_mismatch` | Skip the check that the staging repository description is `Apache Parquet <version> RC<num>`. For recovery only. |
+
+### `bin/publish-release.sh`
+
+```
+publish-release.sh <version> <staging-repo-id> [--rc <num>] [--allow-description-mismatch]
+```
+
+| Argument | Workflow input | Description |
+| --- | --- | --- |
+| `<version>` | `version` | The release version, for example `1.18.0`. |
+| `<staging-repo-id>` | `staging_repo_id` | The Nexus staging repository to release, for example `orgapacheparquet-1234`. |
+| `--rc <num>` | `rc_number` | The RC number that passed the vote. Default: the latest RC. It must be the latest RC for the version. |
+| `--allow-description-mismatch` | `allow_description_mismatch` | Skip the check that the staging repository description is `Apache Parquet <version> RC<num>`. For recovery only. |
+
+The workflow `dry_run` input sets `DRY_RUN`: selected is `DRY_RUN=1`, cleared
+is `DRY_RUN=0`.
+
+### Environment variables
+
 For a real run, set these environment variables:
 
 | Variable | Used by | Purpose |
